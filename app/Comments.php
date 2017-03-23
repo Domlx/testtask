@@ -1,7 +1,31 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Admin
- * Date: 19.03.2017
- * Time: 23:56
- */
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Comments extends Model
+{
+     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'user_id', 'author', 'text', 'mark',
+    ];
+
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+}

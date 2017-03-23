@@ -2,20 +2,18 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
-class User extends Authenticatable
+class User extends Model
 {
-    use Notifiable;
-
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'surname', 'phone', 'address',
     ];
 
     /**
@@ -24,6 +22,31 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+
     ];
+
+    public function comments()
+    {
+        return $this->hasMany(Comments::class, 'user_id', 'id');
+    }
+
+    public function lastComment() //last_comment
+    {
+        return $this->hasOne(Comments::class)
+            ->orderBy('id', 'desc');
+    }
+
+    public function search($keyword)
+    {
+        $query = '';
+        if (trim($keyword) !='') {
+            $query = DB::table('users')
+                ->where("name", "LIKE","%$keyword%")
+                ->orWhere("surname", "LIKE", "%$keyword%")
+                ->orWhere("address", "LIKE", "%$keyword%")
+                ->orWhere("phone", "LIKE", "%$keyword%")
+                ->get();
+        }
+        return $query;
+    }
 }
